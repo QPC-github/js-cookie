@@ -66,7 +66,7 @@
 				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
 				key = key.replace(/[\(\)]/g, escape);
 
-				return (document.cookie = [
+				return (api.getDocument().cookie = [
 					key, '=', value,
 					attributes.expires && '; expires=' + attributes.expires.toUTCString(), // use expires attribute, max-age is not supported by IE
 					attributes.path    && '; path=' + attributes.path,
@@ -84,7 +84,7 @@
 			// To prevent the for loop in the first place assign an empty array
 			// in case there are no cookies at all. Also prevents odd result when
 			// calling "get()"
-			var cookies = document.cookie ? document.cookie.split('; ') : [];
+			var cookies = api.getDocument().cookie ? api.getDocument().cookie.split('; ') : [];
 			var rdecode = /(%[0-9A-Z]{2})+/g;
 			var i = 0;
 
@@ -129,6 +129,14 @@
 			}, [].slice.call(arguments));
 		};
 		api.defaults = {};
+
+		api.setDocument = function(doc){
+		  api._document = doc;
+		}
+
+		api.getDocument = function(){
+		  return api._document || window.document
+		}
 
 		api.remove = function (key, attributes) {
 			api(key, '', extend(attributes, {
